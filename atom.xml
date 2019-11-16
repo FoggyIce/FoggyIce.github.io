@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>火把 | FoggyIce的博客</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://foggyice.github.io/"/>
+  <updated>2019-01-26T07:52:24.524Z</updated>
+  <id>https://foggyice.github.io/</id>
+  
+  <author>
+    <name>FoggyIce</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>简约而不简单的ss服务器端搭建教程</title>
+    <link href="https://foggyice.github.io/archives/%E7%AE%80%E7%BA%A6%E8%80%8C%E4%B8%8D%E7%AE%80%E5%8D%95%E7%9A%84ss%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%90%AD%E5%BB%BA%E6%95%99%E7%A8%8B.html"/>
+    <id>https://foggyice.github.io/archives/简约而不简单的ss服务器端搭建教程.html</id>
+    <published>2017-09-01T15:05:43.000Z</published>
+    <updated>2019-01-26T07:52:24.524Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p><a href="https://www.ingress.com/intel?ll=30.507634,114.414611&amp;z=17&amp;pll=30.507634,114.414611" target="_blank" rel="noopener">题图来源</a><br>将浏览器拉窄即可看到全图<br>PC版网页左上角从上到下第二个图标是目录，请多用目录<br>网页右下角按钮为返回顶部，请多用返回顶部来查看顶部目录</p></blockquote><p><strong>[警告]</strong>本篇文章撰写时间较早，错漏较多，譬如战雷加速那一块的引用已经过时，请批判性阅读。</p><font size="4">目录</font><ol><li><a href="#引子">引子</a></li><li><a href="#例子">例子</a><ul><li>2.1 <a href="#安装">安装</a><ul><li>2.1.1 <a href="#步骤1">步骤1</a></li><li>2.1.2 <a href="#步骤2">步骤2</a></li><li>2.1.3 <a href="#步骤3">步骤3</a></li><li>2.1.4 <a href="#步骤4">步骤4</a></li><li>2.1.5 <a href="#步骤5">步骤5</a></li></ul></li><li>2.2 <a href="#运行">运行</a></li><li>2.3 <a href="#配合使用的实用软件-推荐但不必要">配合使用的实用软件(推荐但不必要)</a></li></ul></li><li><a href="#授人以鱼不如授人以渔">授人以鱼不如授人以渔</a></li><li><a href="#附录">附录</a></li></ol><h1 id="引子"><a href="#引子" class="headerlink" title="引子"></a>引子</h1><p>我也是 <em>身经百战，见得多了</em> ，哪个搭建教程我没见过？不过许多搭建教程都是 <em>图样图森破</em> ，觉得小白啥都不懂，就应该用老版本或者一键搭建脚本，用来源不明的代码仓库搭建，这样万一搭建上出了 <em>偏差</em> ，人家可是 <em>跑得比香港记者还快</em> 。</p><p>这篇教程主要就是从使用最新版本/看官方文档/用最短时间这几个角度入手来讲解如何用最少的命令和最高的 <em>efficiency</em> 来搭建ss。但并不包含如何管理vps后台，如何使用ssh远程登陆vps，系统优化，网络安全设置的部分，如果需要这些步骤的教程，请看附录贴出的我认为不错的教程，或者自行谷歌。<strong>本教程并不鼓励任何伸手党行为，仅旨在提高谷歌搜索的信噪比</strong></p><div title="就是搜不到这种操作.jpg" align="middle"><img src="http://ww2.sinaimg.cn/mw690/61e61e8cgw1f8bk2m5xcyj20g409kq5p.jpg"></div><h1 id="例子"><a href="#例子" class="headerlink" title="例子"></a>例子</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>以搬瓦工ubuntu-16.04-x86_64系统在远程ssh root用户登陆下的情况为例，讲解安装ss-python分支的最新版本的方法，其中ss-python是支持AEAD加密算法的<a href="#[1]">[1]</a><a href="#[2]">[2]</a> 。以下ss-python简称ss。</p><pre class="line-numbers language-bash"><code class="language-bash">apt updateapt <span class="token function">install</span> libsodium-devapt <span class="token function">install</span> python-pipapt <span class="token function">install</span> <span class="token function">git</span>pip <span class="token function">install</span> git+https://github.com/shadowsocks/shadowsocks.git@master<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>总共的命令数不超过5个就可以搞定ss最新版的安装，<del>这就是我一直在说自己建ss非常简单的原因</del>，那么现在我们一个个拆开来看看这些命令到底是干啥的。</p><h3 id="步骤1"><a href="#步骤1" class="headerlink" title="步骤1"></a>步骤1</h3><pre class="line-numbers language-bash"><code class="language-bash">apt update<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>更新软件包列表，是每次升级系统和安装软件前所必需的。而更新软件包则是另一个指令。</p><h3 id="步骤2"><a href="#步骤2" class="headerlink" title="步骤2"></a>步骤2</h3><pre class="line-numbers language-bash"><code class="language-bash">apt <span class="token function">install</span> libsodium-dev<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>Ubuntu 默认软件源里的libsodium库版本太老，不支持AEAD算法。想要使用apt命令安装ss并让ss支持AEAD算法，需要安装libsodium-dev库。<br>如果想自己拉github/libsodium.org上的libsodium代码编译，请自行查找支持AEAD算法的版本或者直接安装最新版，不要看到别的教程怎么说，就 <em>见得风是得雨</em>，<em>出现了偏差</em>，到时候装了一个老版本又不支持AEAD了。</p><h3 id="步骤3"><a href="#步骤3" class="headerlink" title="步骤3"></a>步骤3</h3><pre class="line-numbers language-bash"><code class="language-bash">apt <span class="token function">install</span> python-pip<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>安装python包管理工具pip，方便在后面使用VCS（version control system） support功能<a href="#[3]">[3]</a>。</p><h3 id="步骤4"><a href="#步骤4" class="headerlink" title="步骤4"></a>步骤4</h3><pre class="line-numbers language-bash"><code class="language-bash">apt <span class="token function">install</span> <span class="token function">git</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>安装git</p><h3 id="步骤5"><a href="#步骤5" class="headerlink" title="步骤5"></a>步骤5</h3><pre class="line-numbers language-bash"><code class="language-bash">pip <span class="token function">install</span> git+https://github.com/shadowsocks/shadowsocks.git@master<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>通过pip的VCS功能直接从github的代码仓库安装最新版本的ss，而非pip软件源里的老版本，这条指令在ss的github上的master分支里的readme里找到<a href="#[4]">[4]</a>。</p><h2 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h2><p>自己去看上面提到的那个readme去。</p><h2 id="配合使用的实用软件-推荐但不必要"><a href="#配合使用的实用软件-推荐但不必要" class="headerlink" title="配合使用的实用软件(推荐但不必要)"></a>配合使用的实用软件(推荐但不必要)</h2><p>使用supervisor托管ss并配置开机启动<a href="#[5]">[5]</a>。</p><p>以上。</p><h1 id="授人以鱼不如授人以渔"><a href="#授人以鱼不如授人以渔" class="headerlink" title="授人以鱼不如授人以渔"></a>授人以鱼不如授人以渔</h1><p>我个人当然是推荐使用ubuntu-16.04-x86_64系统的，版本新，又有apt，小白友好型，不用管更新环境的事情（我之前就是被centos的老系统坑死了），这样基本可以直接套用以上的教程，但是每个人的环境都是不一样的，选择的服务器也是不一样的，甚至安装的版本也是不一样的，这个时候就需要自己去找解决方案。</p><p>如果某一步出现了问题，按照关键字去搜索，能直接看懂，就补装上需要的软件或者环境包。在你已经清楚要做什么的时候，首先推荐的是官方的文档，譬如安装ss-libev，我就推荐直接去看ss-libev的github的readme或者wiki。没有头绪，不清楚要干啥的时候，再去看教程，因为网上的教程通常有偏差。</p><p>针对windows下游戏的ss全局代理（包括udp转发）的教程，参见<a href="#[6]">[6]</a>。现在这篇简约教程就是之前那篇特殊姿势教程的精炼版本。由于那边是度娘的地盘，还请大家不要在那里回复，有什么问题在这里讨论。</p><h1 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h1><blockquote><p><a href="https://blog.phpgao.com/bandwagonhost_vps_panel.html" target="_blank" rel="noopener">老高对搬瓦工后台的讲解</a></p></blockquote><br><a name="[1]"><a href="#[1]">[1]为什么要使用AEAD算法</a></a><blockquote><p><a href="https://blessing.studio/why-do-shadowsocks-deprecate-ota/" target="_blank" rel="noopener">为何 shadowsocks 要弃用一次性验证 (OTA)</a></p></blockquote><p><a href="#安装">返回安装</a></p><br><a name="[2]"><a href="#[2]">[2]libsodium支持哪些AEAD算法</a></a><blockquote><p><a href="https://jedisct1.gitbooks.io/libsodium/content/secret-key_cryptography/aead.html" target="_blank" rel="noopener">The Sodium crypto library (libsodium)</a></p></blockquote><p><a href="#安装">返回安装</a></p><br><a name="[3]"><a href="#[3]">[3]pip的VCS support是什么</a></a><blockquote><p><a href="https://pip.pypa.io/en/stable/reference/pip_install/#vcs-support" target="_blank" rel="noopener">VCS Support</a></p></blockquote><p><a href="#步骤3">返回步骤3</a></p><br><a name="[4]"><a href="#[4]">[4]<del>隐藏分支</del></a></a><blockquote><p><a href="https://github.com/shadowsocks/shadowsocks/blob/master/README.md" target="_blank" rel="noopener">README.md</a></p></blockquote><p><a href="#步骤5">返回步骤5</a></p><br><a name="[5]"><a href="#[5]">[5]supervisor教程</a></a><blockquote><p><a href="https://blog.phpgao.com/supervisor_shadowsocks.html" target="_blank" rel="noopener">使用supervisor托管shadowsocks</a></p></blockquote><p><a href="#配合使用的实用软件-推荐但不必要">返回配合使用的实用软件</a></p><br><a name="[6]"><a href="#[6]">[6]贴吧OCR敏感词相关</a></a><blockquote><p><a href="https://tieba.baidu.com/p/5248648210" target="_blank" rel="noopener">使用特殊姿势给战雷加速v2.0</a></p></blockquote><p><a href="#授人以鱼不如授人以渔">返回授人以渔</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://www.ingress.com/intel?ll=30.507634,114.414611&amp;amp;z=17&amp;amp;pll=30.507634,114.414611&quot; target=&quot;_blank&quot; rel=&quot;n
+      
+    
+    </summary>
+    
+      <category term="教程" scheme="https://foggyice.github.io/categories/%E6%95%99%E7%A8%8B/"/>
+    
+    
+      <category term="ss" scheme="https://foggyice.github.io/tags/ss/"/>
+    
+      <category term="ss-python" scheme="https://foggyice.github.io/tags/ss-python/"/>
+    
+      <category term="基于官方文档" scheme="https://foggyice.github.io/tags/%E5%9F%BA%E4%BA%8E%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3/"/>
+    
+      <category term="小白向" scheme="https://foggyice.github.io/tags/%E5%B0%8F%E7%99%BD%E5%90%91/"/>
+    
+      <category term="Ubuntu" scheme="https://foggyice.github.io/tags/Ubuntu/"/>
+    
+      <category term="服务器" scheme="https://foggyice.github.io/tags/%E6%9C%8D%E5%8A%A1%E5%99%A8/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Grappling hook!</title>
+    <link href="https://foggyice.github.io/archives/Grappling%20hook!.html"/>
+    <id>https://foggyice.github.io/archives/Grappling hook!.html</id>
+    <published>2017-09-01T09:33:44.000Z</published>
+    <updated>2019-01-26T07:32:24.967Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p><a href="https://legolass1119.deviantart.com/art/Potatoes-and-Grappling-Hooks-376966073" target="_blank" rel="noopener">题图来源</a><br>将浏览器拉窄即可看到全图<br>PC版网页左上角从上到下第二个图标是目录，请多用目录</p></blockquote><h1 id="首页标语起源"><a href="#首页标语起源" class="headerlink" title="首页标语起源"></a>首页标语起源</h1><p>Grappling Hook是怪诞小镇里Mable的制胜法宝，而Mable是我头像Dipper的双胞胎姐姐。标语这种东西，开心点就好啦，总感觉加太高深的话会变得很中二。</p><h1 id="考据"><a href="#考据" class="headerlink" title="考据"></a>考据</h1><p>以下视频链接请在登陆b站会员之后观看，怪诞小镇动画在前一阵已经变为b站上的 <em>会员才知道的世界</em> 。</p><h2 id="Grappling-Hook在怪诞小镇里的出场"><a href="#Grappling-Hook在怪诞小镇里的出场" class="headerlink" title="Grappling Hook在怪诞小镇里的出场"></a><a href="http://gravityfalls.wikia.com/wiki/Mabel%27s_grappling_hook" target="_blank" rel="noopener">Grappling Hook在怪诞小镇里的出场</a></h2><blockquote><p>At the end of “Tourist Trapped,” Stan said that the twins could choose one item from the Mystery Shack gift shop, but forgot the grappling hook was there. Consequently, Mabel chose it as her gift and, despite Stan’s initial protests, was allowed to keep it. She is later seen “shutting off the light” with it. She ends up breaking both the window and lamp in the process.<br><a href="https://www.bilibili.com/video/av309946" target="_blank" rel="noopener">S01E01 19:48</a></p></blockquote><h2 id="头像来源"><a href="#头像来源" class="headerlink" title="头像来源"></a><a href="http://www.bilibili.com/video/av2591993" target="_blank" rel="noopener">头像来源</a></h2><blockquote><p>就是怪诞小镇第2季第12集14:55，Dipper迷弟一般的叫声</p><p><img src="https://ws1.sinaimg.cn/large/b07fd0f8gy1fj3wagr7nrj21hc0u0b2a.jpg" alt="截图1"></p><p><img src="https://ws1.sinaimg.cn/large/b07fd0f8gy1fj3waobighj21hc0u0npe.jpg" alt="截图2"></p><p><img src="https://ws1.sinaimg.cn/large/b07fd0f8gy1fj3walnvw1j21hc0u0x6q.jpg" alt="截图3"></p><p><img src="https://ws1.sinaimg.cn/large/b07fd0f8gy1fj3wah4farj21hc0u07wi.jpg" alt="截图4"></p></blockquote><h2 id="彩蛋：R-amp-M与怪诞小镇的渊源"><a href="#彩蛋：R-amp-M与怪诞小镇的渊源" class="headerlink" title="彩蛋：R&amp;M与怪诞小镇的渊源"></a><a href="https://www.bilibili.com/video/av10785678/" target="_blank" rel="noopener">彩蛋：R&amp;M与怪诞小镇的渊源</a></h2>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://legolass1119.deviantart.com/art/Potatoes-and-Grappling-Hooks-376966073&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;题图来源
+      
+    
+    </summary>
+    
+      <category term="关于" scheme="https://foggyice.github.io/categories/%E5%85%B3%E4%BA%8E/"/>
+    
+    
+      <category term="博客" scheme="https://foggyice.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="学习一个" scheme="https://foggyice.github.io/tags/%E5%AD%A6%E4%B9%A0%E4%B8%80%E4%B8%AA/"/>
+    
+      <category term="怪诞小镇" scheme="https://foggyice.github.io/tags/%E6%80%AA%E8%AF%9E%E5%B0%8F%E9%95%87/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>燃起火把</title>
+    <link href="https://foggyice.github.io/archives/%E7%87%83%E8%B5%B7%E7%81%AB%E6%8A%8A.html"/>
+    <id>https://foggyice.github.io/archives/燃起火把.html</id>
+    <published>2017-08-31T11:48:19.000Z</published>
+    <updated>2019-01-26T07:52:17.746Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p><a href="https://warthunder.com/en/devblog/current/790" target="_blank" rel="noopener">题图来源</a><br>将浏览器拉窄即可看到全图<br>PC版网页左上角从上到下第二个图标是目录，请多用目录</p></blockquote><h1 id="序"><a href="#序" class="headerlink" title="序"></a>序</h1><p>承蒙各位博客大佬的引路，我的博客终于也建好了，同时这也是我建的第一个博客。虽然一个大佬给我安利基于ruby的jekyll，<del>我甚至连Arch都装好了就是为了ruby环境建博客，</del>然而看到基于<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">Hexo</a>的 <a href="https://github.com/viosey/hexo-theme-material" target="_blank" rel="noopener">Material Design</a> 居然可以这么漂亮<del>&amp;信仰</del>之后，即使这是拿<del>PoorShell</del>PowerShell的windows环境搭建的，我也<del>偷税</del>愉悦地接受了。<br>现在点主页右上角的那张火把的图片就会转到这篇文章，这是因为这篇文章主要解释博客名称的来源，而左上角我也加了一篇文章解释了。</p><h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><p>这个博客的名字来源于二战时期的火把攻击机，正好是我<a href="https://github.com/FoggyIce" target="_blank" rel="noopener">github</a> ID 冰雾的反义词<del>，没什么奇怪的<a href="#hint">引申</a> ，其实就是我瞎起的</del>。不过我战雷的飞机玩得很烂，还有待多玩一下这个西方国家的飞机。我这个博客大概就是贴一些有意思的东西，或者是专门给<del>不会搜索的</del>小白看的教程，提高一下姿势水平。</p><p>从今往后，还请各位大佬多多关照辣。</p><div title="就是搜不到这种操作.jpg" align="middle"><img src="http://ww2.sinaimg.cn/mw690/61e61e8cgw1f8bk2m5xcyj20g409kq5p.jpg"></div><h1 id="学习一个"><a href="#学习一个" class="headerlink" title="学习一个"></a>学习一个</h1><h2 id="火把攻击机维基百科"><a href="#火把攻击机维基百科" class="headerlink" title="火把攻击机维基百科"></a><a href="https://en.wikipedia.org/wiki/Blackburn_Firebrand" target="_blank" rel="noopener">火把攻击机维基百科</a></h2><blockquote><p>The Blackburn Firebrand was a British single-engine strike fighter for the Fleet Air Arm of the Royal Navy designed during World War II by Blackburn Aircraft. Originally intended to serve as a pure fighter, its unimpressive performance and the allocation of its Napier Sabre piston engine by the Ministry of Aircraft Production for the Hawker Typhoon caused it to be redesigned as a strike fighter to take advantage of its load-carrying capability.<br>……<br>The fixed armament of four 20 mm (0.79 in) Hispano autocannon was fitted in the outer wing panels with 200 rounds per gun.<br>……<br><strong>Armament</strong></p><ul><li>Guns: 4 × 20 mm (0.79 in) Hispano autocannon</li><li>Rockets: 16 × RP-3</li><li>Bombs: 1 × 1,850 lb (840 kg) torpedo or 2 × 2,000 lb (910 kg) bombs</li></ul><p>……<br><div title="吔我西斯帕诺啦">![吔我西斯帕诺啦][HSPN]</div></p><p>辣鸡舔地苟指的是美国在二战时期飞机上使用的.50机枪系列。由于二战时期的美国人一直没有攻克20mm机炮研制的难题，详见卧烟社的科普视频<a href="https://www.bilibili.com/video/av3248851/" target="_blank" rel="noopener">【卧烟社】第22期：一代名炮——西斯帕诺HS404</a> 07:38处对.50机枪的讲解，似乎是把美国体制<em>批判一番</em>，这国怎，定体问，我陷思。</p></blockquote><br><h2 id="战雷里火把攻击机的游戏视频"><a href="#战雷里火把攻击机的游戏视频" class="headerlink" title="战雷里火把攻击机的游戏视频"></a><a href="https://www.bilibili.com/video/av7394714" target="_blank" rel="noopener">战雷里火把攻击机的游戏视频</a></h2><br><h2 id="冰与火相关的散文-引申"><a href="#冰与火相关的散文-引申" class="headerlink" title="冰与火相关的散文[引申]"></a><a href="http://www.ziyexing.com/luxun/luxun_sw_yc_14.htm" target="_blank" rel="noopener">冰与火相关的散文<p id="hint"><del>[引申]</del></p></a></h2><blockquote><p>上下四旁无不冰冷、青白。而一切青白冰上，却有红影无数，纠结如珊瑚网。我俯看脚下，有火焰在。</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://warthunder.com/en/devblog/current/790&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;题图来源&lt;/a&gt;&lt;br&gt;将浏览器拉窄即可看到全图&lt;br&gt;PC版网页左上角从
+      
+    
+    </summary>
+    
+      <category term="关于" scheme="https://foggyice.github.io/categories/%E5%85%B3%E4%BA%8E/"/>
+    
+    
+      <category term="博客" scheme="https://foggyice.github.io/tags/%E5%8D%9A%E5%AE%A2/"/>
+    
+      <category term="学习一个" scheme="https://foggyice.github.io/tags/%E5%AD%A6%E4%B9%A0%E4%B8%80%E4%B8%AA/"/>
+    
+      <category term="战争雷霆" scheme="https://foggyice.github.io/tags/%E6%88%98%E4%BA%89%E9%9B%B7%E9%9C%86/"/>
+    
+      <category term="鲁迅" scheme="https://foggyice.github.io/tags/%E9%B2%81%E8%BF%85/"/>
+    
+  </entry>
+  
+</feed>
